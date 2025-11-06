@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="bower_components/material-design-lite/material.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/stepper.css">
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <style>
+  * {
+    font-family: 'Nunito', sans-serif;
+  }
+
+  #espacosemantico {
+    position: relative;
+    width: 100%;
+  }
+
+  .semantic {
+    position: relative;
+    height: 650px;
+    width: 650px;
+    margin-top: -5px;
+    left: 50%;
+    margin-left: -650px;
+  }
+
+  .semantic1 {
+    position: relative;
+    height: 650px;
+    width: 650px;
+    margin-top: -5px;
+    left: 50%;
+    margin-left: -650px;
+  }
+
+  .tooltip {
+  position: relative;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #dbdbdb;
+  padding: 3px;
+}
+.tooltip span {
+  visibility: hidden;
+  width: 10em;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 9;
+  top: -1em;
+  left:  100%;
+  margin-left:1em;
+  opacity: 0;
+  transition: opacity 1s;
+}
+.tooltip span::after {
+  content: "";
+  position: absolute;
+  top: 1.5em;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+.tooltip input {
+  display:none;
+}
+.tooltip input:checked+span {
+  visibility: visible;
+  opacity: 1;
+}
+
+  #circulo {
+    position: absolute;
+    width: 10px;
+    border: solid 1px white;
+    height: 10px;
+    background-color: red;
+    border-radius: 50px;
+    visibility: hidden;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    ;
+  }
+
+  #circulo1 {
+    position: absolute;
+    width: 10px;
+    border: solid 1px white;
+    height: 10px;
+    background-color: red;
+    border-radius: 50px;
+    visibility: hidden;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    ;
+  }
+
+  #excitacao {
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    margin-top: 7px;
+  }
+
+  #valencia {
+    position: absolute;
+    width: 99%;
+    margin-top: 242px;
+  }
+
+  #rodape {
+    position: fixed;
+    bottom: 0px;
+    background-color: #541212;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body style="width:500px; height:600px;">
+    <!-- style -->
+    <style>
+    .mdl-stepper>.mdl-step>.mdl-step__content {}
+    </style>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title"><img src="images/logow.png" alt="logoLIFeS" height="20" /> <img src="images/logo.png" alt="logoLIFeS" height="20" /> <img src="images/ufscar.png" alt="logoLIFeS" height="20" /></span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation. We hide it in small screens. -->
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">Uiflex </span>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="perfil.html">Início</a>
+                <a class="mdl-navigation__link" href="sobre.html">Sobre</a>
+                <a class="mdl-navigation__link" href="politica.html">Política de Privacidade</a>
+            </nav>
+        </div>
+        <section class="mdl-stepper-demo">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <!-- markup -->
+                    <ul class="mdl-stepper" id="demo-stepper-non-linear">
+
+
+                      <li class="mdl-step">
+                        <span class="mdl-step__label">
+                        <span class="mdl-step__title">
+                            <span class="mdl-step__title-text">Qual emoção você está sentindo agora?</span>
+                        </span>
+                        </span>
+                          <div class="mdl-step__content">
+                              <div class="mdl-typography--text-center">
+
+                                <!-- EXCITAÇÃO -->
+                                <span class="labelquadrante"><b>Ativo/Excitação</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="Impacto de motivação do usuário, de excitação(+1) ou calma(-1)">?<input type="checkbox"><span>Impacto de motivação do usuário, de excitação(+1) ou calma(-1)</span></label>
+                                <br>
+                                <span>Baixo</span>
+                                <input id="defaultSlider" name="arousal" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Alto</span>
+                                <p class="note" style="text-align: center;"><span id="currentValue">0</span></p><br>
+
+                                <!-- VALÊNCIA -->
+                                <span class="labelquadrante"><b>Valência</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="Grau de satisfação do usuário, de prazer(+1) ou desprazer(-1)">?<input type="checkbox"><span>Grau de satisfação do usuário, de prazer(+1) ou desprazer(-1)</span></label>
+                                <br>
+                                <span>Negativa</span>
+                                <input id="defaultSlider2" name="valence" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Positiva</span>
+                                <p class="note" style="text-align: center;"><span id="currentValue2">0</span></p><br>
+
+                                <!-- CONDUTIVO -->
+                                <span class="labelquadrante"><b>Facilidade de Conclusão</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="O quão fácil(+1) ou difícil(-1) é para alguém alcançar um objetivo">?<input type="checkbox"><span>O quão fácil(+1) ou difícil(-1) é para alguém alcançar um objetivo</span></label>
+                                <br>
+                                <span>Baixa</span>
+                                <input id="defaultSlider3" name="conductive" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Alta</span>
+                                <p class="note" style="text-align: center;"><span id="currentValue3">0</span></p><br>
+
+                                <!-- CONTROLE -->
+                                <span class="labelquadrante"><b>Sentimento de controle</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="Controle que o usuário possui sobre determinado dispositivo, positivo(+1) ou negativo(-1)">?<input type="checkbox"><span>Controle que o usuário possui sobre determinado dispositivo, positivo(+1) ou negativo(-1)</span></label>
+                                <br>
+                                <span>Baixo</span>
+                                <input id="defaultSlider4" name="control" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Alto</span>
+                                <p class="note" style="text-align: center;"><span id="currentValue4">0</span></p><br>
+
+                              </div>
+                          </div>
+                          <div class="mdl-step__actions">
+                              <button id="btnS0" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored mdl-button--raised" data-stepper-next>
+                                  Salvar
+                              </button>
+                          </div>
+                      </li>
+
+                      <li class="mdl-step">
+                        <span class="mdl-step__label">
+                        <span class="mdl-step__title">
+                            <span class="mdl-step__title-text">Qual sua emoção desejada?</span>
+                        </span>
+                        </span>
+                          <div class="mdl-step__content">
+                            <div class="mdl-typography--text-center">
+
+                                <!-- EXCITAÇÃO -->
+                                <span class="labelquadrante"><b>Ativo/Excitação</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="Impacto de motivação do usuário, de excitação(+1) ou calma(-1)">?<input type="checkbox"><span>Impacto de motivação do usuário, de excitação(+1) ou calma(-1)</span></label>
+                                <br>
+                                <span>Baixo</span>
+                                <input id="1defaultSlider" name="arousal" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Alto</span>
+                                <p class="note" style="text-align: center;"><span id="1currentValue">0</span></p><br>
+
+                                <!-- VALÊNCIA -->
+                                <span class="labelquadrante"><b>Valência</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="Grau de satisfação do usuário, de prazer(+1) ou desprazer(-1)">?<input type="checkbox"><span>Grau de satisfação do usuário, de prazer(+1) ou desprazer(-1)</span></label>
+                                <br>
+                                <span>Negativa</span>
+                                <input id="1defaultSlider2" name="valence" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Positiva</span>
+                                <p class="note" style="text-align: center;"><span id="1currentValue2">0</span></p><br>
+
+                                <!-- CONDUTIVO -->
+                                <span class="labelquadrante"><b>Facilidade de Conclusão</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="O quão fácil(+1) ou difícil(-1) é para alguém alcançar um objetivo">?<input type="checkbox"><span>O quão fácil(+1) ou difícil(-1) é para alguém alcançar um objetivo</span></label>
+                                <br>
+                                <span>Baixa</span>
+                                <input id="1defaultSlider3" name="conductive" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Alta</span>
+                                <p class="note" style="text-align: center;"><span id="1currentValue3">0</span></p><br>
+
+                                <!-- CONTROLE -->
+                                <span class="labelquadrante"><b>Sentimento de controle</b></span>
+                                <label class="tooltip" style="border-radius: 50%;" title="Controle que o usuário possui sobre determinado dispositivo, positivo(+1) ou negativo(-1)">?<input type="checkbox"><span>Controle que o usuário possui sobre determinado dispositivo, positivo(+1) ou negativo(-1)</span></label>
+                                <br>
+                                <span>Baixo</span>
+                                <input id="1defaultSlider4" name="control" class="defaultSlider" type="range" min="-1" max="1" value="0" step="0.010"/>
+                                <span>Alto</span>
+                                <p class="note" style="text-align: center;"><span id="1currentValue4">0</span></p><br>
+
+                            </div>
+                          </div>
+                          <div class="mdl-step__actions">
+                              <button id="btnS01" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored mdl-button--raised dialog-button" data-stepper-next>
+                                  Salvar
+                              </button>
+                              <dialog id="dialog" class="mdl-dialog">
+                                  <div class="mdl-dialog__content">
+                                      <h4>
+                                      Perfil de usuário salvo com sucesso. Agora vamos gerar seu perfil de interação.
+                                  </h4>
+                                  </div>
+                                  <div class="mdl-dialog__actions">
+                                      <button type="button" class="mdl-button">OK</button>
+                                  </div>
+                              </dialog>
+                          </div>
+                      </li>
+
+
+                      </ul>
+
+                </div>
+            </div>
+    </div>
+    </section>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/material-design-lite/material.min.js"></script>
+    <script src="scripts/whoami.js"></script>
+    <script src="scripts/stepper.js"></script>
+
+    <!-- script -->
+</body>
+
+</html>

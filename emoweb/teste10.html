@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arduino Data</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    #sensorData {
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    #bpm {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dados do Arduino</h1>
+  <div id="container">
+    <!-- Botão para iniciar a conexão serial -->
+    <button onclick="connectSerial()">Conectar ao Arduino</button>
+    <!-- Elementos para exibir os dados dos sensores -->
+    <div id="sensorData">
+      <p id="sensorA1">ECG Valor do Sensor A1:</p>
+      <p id="sensor10">ECG Valor do Pino 10:</p>
+      <p id="sensor11">ECG Valor do Pino 11:</p>
+      <p id="sensorA0">GSR Valor do Sensor A0:</p>
+    </div>
+    <!-- Elemento para exibir a taxa de batimento por minuto (BPM) -->
+    <div id="bpm"></div>
+  </div>
+
+  <script>
+    // Função para conectar ao Arduino e ler os dados da porta serial
+    async function connectSerial() {
+      try {
+        // Solicita acesso à porta serial com a opção 'baudRate' especificada
+        const port = await navigator.serial.requestPort({ baudRate: 9600 });
+        await port.open({ baudRate: 9600 }); // Abre a porta serial
+
+        // Cria um leitor para ler os dados da porta serial
+        const reader = port.readable.getReader();
+
+        // Decodificador de texto UTF-8
+        const utf8Decoder = new TextDecoder('utf-8');
+
+        // Leitura assíncrona dos dados
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          // Decodifica os dados recebidos
+          const decodedString = utf8Decoder.decode(value);
+          const sensorValues = decodedString.split(',');
+
+          // Exibe os dados dos sensores
+          document.getElementById('sensorA1').innerText = `ECG Valor do Sensor A1: ${sensorValues[0]}`;
+          document.getElementById('sensor10').innerText = `ECG Valor do Pino 10: ${sensorValues[1]}`;
+          document.getElementById('sensor11').innerText = `ECG Valor do Pino 11: ${sensorValues[2]}`;
+          document.getElementById('sensorA0').innerText = `GSR Valor do Sensor A0: ${sensorValues[3]}`;
+
+          // Salva os dados no chrome.storage.local
+          chrome.storage.local.set({ 
+            sensorA1: sensorValues[0],
+            sensor10: sensorValues[1],
+            sensor11: sensorValues[2],
+            sensorA0: sensorValues[3],
+            timestamp: new Date().toISOString()
+          }, () => {
+            console.log('Dados salvos no chrome.storage.local');
+          });
+
+          // Calcula e exibe a BPM
+          const bpm = calculateBPM(parseFloat(sensorValues[0]));
+          document.getElementById('bpm').innerText = `BPM: ${bpm}`;
+
+          // Exibe os dados no console
+          console.log(`ECG Valor do Sensor A1: ${sensorValues[0]}`);
+          console.log(`ECG Valor do Pino 10: ${sensorValues[1]}`);
+          console.log(`ECG Valor do Pino 11: ${sensorValues[2]}`);
+          console.log(`GSR Valor do Sensor A0: ${sensorValues[3]}`);
+          console.log(`BPM: ${bpm}`);
+        }
+      } catch (error) {
+        console.error('Erro ao conectar à porta serial:', error);
+      }
+    }
+
+    // Função para calcular a BPM com base nos dados recebidos
+    function calculateBPM(sensorValue) {
+        const threshold = 300; // Define um limiar para detectar picos no sinal
+        const interval = 1000; // Define o intervalo de tempo em milissegundos (1 segundo)
+
+        let peaks = 0; // Inicializa o contador de picos
+
+        // Percorre o sinal e conta o número de picos
+        for (let i = 1; i < sensorValue.length - 1; i++) {
+            // Verifica se o valor atual é maior que o limiar e também é maior que os valores ao redor (pico)
+            if (sensorValue[i] > threshold && sensorValue[i] > sensorValue[i - 1] && sensorValue[i] > sensorValue[i + 1]) {
+                peaks++; // Incrementa o contador de picos
+            }
+        }
+
+        // Converte o número de picos em BPM
+        const bpm = (peaks / (interval / 60000)); // Divide o número de picos pelo intervalo convertido em minutos
+
+        return bpm; // Retorna o valor dos batimentos por minuto
+    }
+
+  </script>
+</body>
+</html>

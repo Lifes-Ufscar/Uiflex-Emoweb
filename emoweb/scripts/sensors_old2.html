@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitor de Batimentos Cardíacos</title>
+</head>
+<body>
+  <h1>Monitor de Batimentos Cardíacos</h1>
+  <p>Abra o console do navegador para ver os dados do Arduino.</p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Conecte-se ao WebSocket
+    const socket = io();
+
+    // Quando os dados do Arduino forem recebidos, mostre no console
+    socket.on('arduinoData', function(data) {
+      console.log('Dados do Arduino:', data);
+    });
+  </script>
+</body>
+</html>

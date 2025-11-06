@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados do Arduino</title>
+    <style>
+        button {
+            display: block;
+            margin: 10px 0;
+            background-color: aquamarine;
+            border-radius: 15px;
+            padding: 10px;
+            width: 200px;
+            border-width: 0px;
+            cursor: pointer;
+        }
+        button:hover{
+            background-color: greenyellow;
+            transition: 0.5s;
+        }
+        #stored-data {
+            width: 80%;
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dados do Arduino</h1>
+    <pre id="data"></pre>
+    
+    <button id="start-button">Iniciar Gravação</button>
+    <button id="stop-button">Parar Gravação</button>
+    <button id="clear-button">Limpar Dados</button>
+    <button id="save-button">Salvar Dados</button>
+    <button id="display-button">Exibir Dados</button>
+
+    <div id="stored-data"></div>
+    <script src="scripts/sensor_script.js"></script>
+    <script src="scripts/xlsx.full.min.js"></script>
+</body>
+</html>

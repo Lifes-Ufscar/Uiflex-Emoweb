@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arduino Data</title>
+  <!-- Importa a biblioteca Chart.js para criar o gráfico -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    #sensorData {
+      margin-top: 20px;
+      background-color: #f2f2f2;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    #dataChartContainer {
+      width: 40%;
+      height: 40%;
+    }
+
+    #bpm {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dados do Arduino</h1>
+  <div id="container">
+    <!-- Botão para iniciar a conexão serial -->
+    <button onclick="connectSerial()">Conectar ao Arduino</button>
+    <!-- Elementos para exibir os dados dos sensores -->
+    <div id="sensorData">
+      <p id="sensorA1">ECG Valor do Sensor A1:</p>
+      <p id="sensor10">ECG Valor do Pino 10:</p>
+      <p id="sensor11">ECG Valor do Pino 11:</p>
+      <p id="sensorA0">GSR Valor do Sensor A0:</p>
+    </div>
+    <!-- Elemento para exibir a taxa de batimento por minuto (BPM) -->
+    <div id="bpm"></div>
+    <!-- Contêiner para o gráfico -->
+    <div id="dataChartContainer">
+      <canvas id="dataChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Variável global para o gráfico
+    let chart;
+    // Variável global para o contador de tempo
+    let timeCounter = 0;
+    // Variável global para armazenar a última BPM calculada
+    let lastBPM = 0;
+
+    const MAX_DATA_POINTS = 10; // Defina o número máximo de pontos de dados para o gráfico
+
+    async function connectSerial() {
+      try {
+        // Solicita acesso à porta serial com a opção 'baudRate' especificada
+        const port = await navigator.serial.requestPort({ baudRate: 9600 });
+        await port.open({ baudRate: 9600 }); // Abre a porta serial
+
+        // Cria um leitor para ler os dados da porta serial
+        const reader = port.readable.getReader();
+
+        // Decodificador de texto UTF-8
+        const utf8Decoder = new TextDecoder('utf-8');
+
+        // Inicializa os dados para o gráfico
+        const data = {
+          labels: [],
+          datasets: [{
+            label: 'Dados do Sensor',
+            borderColor: 'rgb(75, 192, 192)',
+            data: [],
+            fill: false
+          }]
+        };
+
+        // Cria o gráfico com os dados iniciais
+        chart = new Chart(document.getElementById('dataChart').getContext('2d'), {
+          type: 'line',
+          data: data,
+          options: {
+            animation: false,
+            scales: {
+              x: {
+                type: 'linear'
+              }
+            }
+          }
+        });
+
+        // Leitura assíncrona dos dados
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          // Decodifica os dados recebidos
+          const decodedString = utf8Decoder.decode(value);
+          const sensorValues = decodedString.split(',');
+
+          // Exibe os dados dos sensores
+          document.getElementById .innerText = `ECG Valor do Sensor A1: ${sensorValues[0]}`;
+          document.getElementById('sensor10').innerText = `ECG Valor do Pino 10: ${sensorValues[1]}`;
+          document.getElementById('sensor11').innerText = `ECG Valor do Pino 11: ${sensorValues[2]}`;
+          document.getElementById('sensorA0').innerText = `GSR Valor do Sensor A0: ${sensorValues[3]}`;
+        
+          
+          // Adiciona o novo valor ao gráfico
+          if( sensorValues[1] == 0 && sensorValues[2] == 0 ){
+            addData(chart, parseFloat(sensorValues[0]));
+            addData(chart, parseFloat(0)); 
+
+            // Calcula e exibe a BPM
+            const bpm = calculateBPM(parseFloat(sensorValues[0]));
+            document.getElementById('bpm').innerText = `BPM: ${bpm}`;
+                       
+          }else{
+            addData(chart, parseFloat(0)); 
+            
+         }
+        
+          
+
+          // Atualiza o tempo no eixo x do gráfico
+          timeCounter++;
+        }
+      } catch (error) {
+        console.error('Erro ao conectar à porta serial:', error);
+      }
+    }
+
+    // Função para adicionar novos dados ao gráfico
+    function addData(chart, data) {
+      // Remove o primeiro ponto de dados se o número de pontos for maior que o máximo permitido
+      if (chart.data.labels.length >= MAX_DATA_POINTS) {
+        chart.data.labels.shift(); // Remove o primeiro ponto de dados no eixo x
+        chart.data.datasets.forEach(dataset => {
+          dataset.data.shift(); // Remove o primeiro ponto de dados em cada conjunto de dados
+        });
+      }
+
+      // Adiciona o novo ponto de dados no final
+      chart.data.labels.push(timeCounter.toString());
+      chart.data.datasets.forEach(dataset => {
+        dataset.data.push(data); // Adiciona o novo ponto de dados
+      });
+
+      // Atualiza o gráfico
+      chart.update();
+    }
+
+    // Função para calcular a BPM com base nos dados recebidos
+    function calculateBPM(sensorValue) {
+        const threshold = 300; // Define um limiar para detectar picos no sinal
+        const interval = 1000; // Define o intervalo de tempo em milissegundos (1 segundo)
+
+        let peaks = 0; // Inicializa o contador de picos
+
+        // Percorre o sinal e conta o número de picos
+            for (let i = 1; i < sensorValue.length - 1; i++) {
+                // Verifica se o valor atual é maior que o limiar e também é maior que os valores ao redor (pico)
+                if (sensorValue[i] > threshold && sensorValue[i] > sensorValue[i - 1] && sensorValue[i] > sensorValue[i + 1]) {
+                    peaks++; // Incrementa o contador de picos
+                }
+            }
+
+            // Converte o número de picos em BPM
+            const bpm = (peaks / (interval / 60000)); // Divide o número de picos pelo intervalo convertido em minutos
+
+        return bpm; // Retorna o valor dos batimentos por minuto
+    }
+
+  </script>
+</body>
+</html>

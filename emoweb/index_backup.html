@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados do Arduino</title>
+</head>
+<body>
+    <h1>Dados do Arduino</h1>
+    <pre id="data"></pre>
+    <script>
+        // Conectar ao servidor WebSocket
+        const socket = new WebSocket('ws://localhost:3000');
+
+        // Receber e exibir dados
+        socket.addEventListener('message', function(event) {
+            const dataElement = document.getElementById('data');
+            dataElement.textContent = event.data;
+            let dataArray = event.data.split(',').map(Number);
+            //let firstElement = dataArray[0];
+            console.log('GSR', dataArray[0]);
+
+
+            let json_sensor = {"GRC":dataArray[0]};
+            json_obj_sensor=[];
+            json_obj_sensor.push(json_sensor);
+            json_array_sensor = JSON.stringify(json_obj_sensor);
+            chrome.storage.local.set({
+            'json_array_sensor': json_array_sensor
+            });
+
+        });
+
+        socket.addEventListener('open', function() {
+            console.log('Conectado ao WebSocket');
+        });
+
+        socket.addEventListener('close', function() {
+            console.log('Desconectado do WebSocket');
+        });
+
+      
+       let json_sensor = {"GRC":dataArray[0],"Valence":valen_camera,"Arousal":arou_camera};
+       // console.log('Valencia da camera:', valen_camera);
+      //  console.log('Arousal da camera:', arou_camera);
+       // json_obj.push(json);
+       // json_array = JSON.stringify(json_obj);
+       // tempo = tempo + 1;
+       // console.log(json_array);
+       // chrome.storage.local.set({
+       //     'json_array': json_array
+       // });
+
+
+
+
+    </script>
+</body>
+</html>

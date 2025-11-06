@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento Cardíaco</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Monitoramento Cardíaco</h1>
+    <div id="data">Aguardando dados...</div>
+
+    <script>
+        // Conectar ao WebSocket do servidor
+        const socket = io();
+
+        // Atualizar o conteúdo da página com os dados recebidos
+        socket.on('arduinoData', (data) => {
+            document.getElementById('data').innerText = `Dados recebidos: ${data}`;
+            console.log(`Dados recebidos: ${data}`); // Exibir dados no console do navegador
+
+            // Armazenar dados recebidos no localStorage para comunicação entre abas
+            localStorage.setItem('arduinoData', data);
+        });
+
+        // Monitorar alterações no localStorage para atualizar a página em outras abas
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'arduinoData') {
+                document.getElementById('data').innerText = `Dados recebidos: ${event.newValue}`;
+                console.log(`Dados recebidos: ${event.newValue}`); // Exibir dados no console do navegador
+            }
+        });
+
+        // Inicializar a exibição com dados já armazenados (se houver)
+        const storedData = localStorage.getItem('arduinoData');
+        if (storedData) {
+            document.getElementById('data').innerText = `Dados recebidos: ${storedData}`;
+            console.log(`Dados recebidos: ${storedData}`); // Exibir dados no console do navegador
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "express": "^4.20.0",
+    "serialport": "^12.0.0",
+    "socket.io": "^4.7.5",
+    "ws": "^8.18.0"
+  },
+  "name": "emoweb",
+  "version": "1.0.0",
+  "main": "inject.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Popup</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+    }
+    #status {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Status: Desconectado</div>
+  <button id="connect">Conectar</button>
+  <button id="disconnect" disabled>Desconectar</button>
+  <button id="sendMessage" disabled>Enviar Mensagem</button>
+  <div id="messages"></div>
+
+  <script>
+    let socket;
+    const statusDiv = document.getElementById('status');
+    const connectButton = document.getElementById('connect');
+    const disconnectButton = document.getElementById('disconnect');
+    const sendMessageButton = document.getElementById('sendMessage');
+    const messagesDiv = document.getElementById('messages');
+
+    connectButton.addEventListener('click', () => {
+      // Substitua 'ws://your-websocket-url' pela URL do seu servidor WebSocket
+      socket = new WebSocket('ws://localhost:3000'); // Exemplo: URL do servidor WebSocket
+
+      socket.onopen = () => {
+        statusDiv.textContent = 'Status: Conectado';
+        connectButton.disabled = true;
+        disconnectButton.disabled = false;
+        sendMessageButton.disabled = false;
+      };
+
+      socket.onmessage = (event) => {
+        const message = event.data;
+        messagesDiv.innerHTML += `<div>Mensagem recebida: ${message}</div>`;
+      };
+
+      socket.onclose = () => {
+        statusDiv.textContent = 'Status: Desconectado';
+        connectButton.disabled = false;
+        disconnectButton.disabled = true;
+        sendMessageButton.disabled = true;
+      };
+
+      socket.onerror = (error) => {
+        console.error('WebSocket Error: ', error);
+      };
+    });
+
+    disconnectButton.addEventListener('click', () => {
+      if (socket) {
+        socket.close();
+      }
+    });
+
+    sendMessageButton.addEventListener('click', () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        const message = prompt('Digite a mensagem para enviar:');
+        if (message) {
+          socket.send(message);
+        }
+      } else {
+        alert('WebSocket não está conectado.');
+      }
+    });
+  </script>
+</body>
+</html>

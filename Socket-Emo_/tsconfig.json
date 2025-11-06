@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "CommonJS",
+      "rootDir": "./",
+      "outDir": "./dist",
+      "esModuleInterop": true,
+      "strict": true,
+      "resolveJsonModule": true,        // Permite importar arquivos JSON
+      "allowSyntheticDefaultImports": true, // Permite importar módulos como `import x from "x"`
+      "moduleResolution": "node"
+    },
+    "include": ["algs/**/*", "src/agruparUnidades.ts", "src/Unidades.ts"],
+    "exclude": ["node_modules"]
+  }
+  
